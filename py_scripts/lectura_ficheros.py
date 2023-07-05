@@ -129,13 +129,13 @@ for i in range(6):
 # Dividimos las marcas de tiempo en dias y horas a partir de la columna "Time".
 # (divide_time()) => Esta opción tarda menos que pasando los datos a string, dividiendolos y volviendolos a pasar a int.
 # Además, existen registros de tiempo erróneos que superan las 24 horas de un día normal, por lo que filtramos para eliminar
-# los datos que superen las 23:00(>47 en la columna "Hour"):
+# los datos que superen las 23:00(>47 en la columna "hour"):
 # def divide_time_data(datos):
 #     print("Divide la columna Time en dos subcolumnas con los días y las horas:")
 #     start_time = time.time()
 #     data = datos.copy(deep=True)
-#     data[['Date', 'Hour']] = data['Time'].apply(lambda x: pd.Series(divide_time(x)))
-#     filtered_data = data[data['Hour'] <= 47]
+#     data[['day', 'hour']] = data['Time'].apply(lambda x: pd.Series(divide_time(x)))
+#     filtered_data = data[data['hour'] <= 47]
 #     finish_time = time.time()
 #     print("Ha tardado: ", finish_time - start_time)
 #     return filtered_data
@@ -146,7 +146,7 @@ for i in range(6):
 #     print("Divide la columna Time en dos subcolumnas con los días y las horas:")
 #     start_time = time.time()
 #     data = datos.copy(deep=True)
-#     data[['Date', 'Hour']] = data['Time'].apply(lambda x: pd.Series(divide_time_str(x)))
+#     data[['day', 'hour']] = data['Time'].apply(lambda x: pd.Series(divide_time_str(x)))
 #     finish_time = time.time()
 #     print("Ha tardado: ", finish_time - start_time)
 #     return data
@@ -185,7 +185,7 @@ for i in range(6):
 # # print(data)
 # # print(datos_agrupados)
 
-# # data[['Date', 'Hour']] = data['Time'].apply(lambda x: pd.Series(divide_time(x)))
+# # data[['day', 'hour']] = data['Time'].apply(lambda x: pd.Series(divide_time(x)))
 # print("ACABA EL ARCHIVO DE PYTHON")
 
 # # def calculate_agrupados(datos):

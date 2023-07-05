@@ -9,7 +9,7 @@ def divide_time(time):
 
 def divide_time_data(datos):
     data = datos.copy(deep=True)
-    data[['Date', 'Hour']] = data['Time'].apply(lambda x: pd.Series(divide_time(x)))
+    data[['day', 'hour']] = data['Time'].apply(lambda x: pd.Series(divide_time(x)))
     return data
 
 
@@ -37,7 +37,7 @@ data = divide_time_data(datos_agrupados)
 final_data = data.iloc[:-1]
 
 # Eliminamos las filas que contengan valores de tiempo que excedan los límites:
-clean_data = final_data[final_data['Hour'] <= 23]
+clean_data = final_data[final_data['hour'] <= 23]
 
 # Creamos un txt donde guardar los datos para no tener que calcularlos cada vez:
 clean_data.to_csv("../processed_files/AllData.txt", sep=" ", quoting=csv.QUOTE_NONE, escapechar=" ", index=False)
