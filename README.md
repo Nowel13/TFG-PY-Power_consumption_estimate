@@ -2,7 +2,7 @@
 
 En este proyecto se llevará a cabo el estudio de los datos de consumo eléctrico de clientes pertenecientes a una comercializadora.
 
-Los datos se obtienen de una página donde se encuentran públicados. En ellos se muestran millones de filas con los siguientes datos anonimizados:
+Los datos se obtienen de una página donde se encuentran públicados (https://www.ucd.ie/issda/data/commissionforenergyregulationcer/). En ellos se muestran millones de filas con los siguientes datos anonimizados:
 
 - Id de usuarios
 
