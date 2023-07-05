@@ -36,5 +36,8 @@ data = divide_time_data(datos_agrupados)
 # Eliminamos la ultima fila que contiene datos que no pertenecen al estudio:
 final_data = data.iloc[:-1]
 
+# Eliminamos las filas que contengan valores de tiempo que excedan los límites:
+clean_data = final_data[final_data['Hour'] <= 23]
+
 # Creamos un txt donde guardar los datos para no tener que calcularlos cada vez:
-final_data.to_csv("../processed_files/AllData.txt", sep=" ", quoting=csv.QUOTE_NONE, escapechar=" ", index=False)
+clean_data.to_csv("../processed_files/AllData.txt", sep=" ", quoting=csv.QUOTE_NONE, escapechar=" ", index=False)
