@@ -60,11 +60,16 @@ def predict_data(day):
         date_to_copy = date_to_copy - datetime.timedelta(days=7)
     return (date_to_copy - init_date).days 
    
+def predicted_day(day):
+    days = (day - init_date).days
+    date_to_predict = calculate_date(days)
+    date_to_copy = date_to_predict - datetime.timedelta(days=7)
+    return (date_to_copy - init_date).days 
 
 # Aquí comienza la predicción:
 
 # Recogemos los datos previamente preparados:
-data = pd.read_csv("../processed_files/AllData.txt", sep=' ')
+data = pd.read_csv("../../processed_files/AllData.txt", sep=' ')
 
 # Coger la ultima day del archivo de datos para saber si en el 
 # bucle debo retroceder mas en el tiempo:
@@ -72,14 +77,24 @@ data = pd.read_csv("../processed_files/AllData.txt", sep=' ')
 # print(max_date)
 
 param_date = datetime.datetime.strptime(sys.argv[1], "%Y-%m-%d").date()
+print(param_date)
 
 # Elegimos una fecha aleatoria para realizar la predicción, en este
 # caso, las dos semanas anteriores eran días festivos, por lo que se
 # escogerá el consumo de hace 3 semanas: 
 # fecha = calculate_date(372)
+prediction_list = pd.DataFrame(columns=["day", "hour", "mean_kwh"])
 mae_list = []
 for x in range(0,30):
-    prediction_result = data[data["day"] == predict_data(param_date + datetime.timedelta(x))]
+    if x < 8:
+        day = predict_data(param_date + datetime.timedelta(x))
+        prediction_result = data[data["day"] == day]
+        prediction_list = prediction_list.append(prediction_result.drop(columns=["Time", "sum_kwh", "count_users"]))
+    else:
+        day = predicted_day(param_date + datetime.timedelta(x))
+        prediction_result = prediction_list[prediction_list["day"] == day-7]
+        prediction_result["day"] = day
+        prediction_list = prediction_list.append(prediction_result)
     real_result = data[data["day"] == ((param_date + datetime.timedelta(x)) -init_date).days]
     prediction = prediction_result[["mean_kwh","hour"]]
     reality = real_result[["mean_kwh","hour"]]

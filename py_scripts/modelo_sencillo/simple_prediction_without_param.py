@@ -1,41 +1,7 @@
 import csv
-import time
-import sys
 import datetime
 import holidays
 import pandas as pd
-import sklearn
-
-# De esta forma comprobamos si el dia elegido era un dia festivo en España:
-# fecha in dias_festivos
-
-# def add_day(date):
-#     return date + datetime.timedelta(days=1)
-
-# Para coger los datos de los 14 dias previos a los 3 dias anteriores al dado:
-# def make_list(day):
-#     days = (day - init_date).days
-#     date_to_predict = calculate_date(days)
-#     training_dates = []
-#     for x in range(1,14):
-#         new_date = (date_to_predict - datetime.timedelta(days=(3 + x)))
-#         if new_date in dias_festivos:
-#             if x < 7:
-#                 new_date = new_date - datetime.timedelta(days=14)
-#             else:
-#                 new_date = new_date - datetime.timedelta(days=7)
-#             if new_date.strftime("%Y-%m-%d") in training_dates:
-#                 new_date = new_date - datetime.timedelta(days=7)
-#         training_dates.append(new_date.strftime("%Y-%m-%d"))
-#     return training_dates
-
-# lista = make_list(fecha)
-
-# training_days = []
-# for i in lista:
-#     training_days.append((datetime.datetime.strptime(i,"%Y-%m-%d").date() - init_date).days)
-
-# print(training_days)
 
 # Establecemos los días festivos para preparar los días a utilizar como prediccion:
 dias_festivos = holidays.ES()
@@ -63,33 +29,26 @@ def predict_data(days):
         return (date_to_copy - init_date).days 
    
 
+# TODO: Debería de poder coger los resultados que he estado calculando en cada predicción en lugar de seguir cogiendo los datos
+# de consumo de la columna de datos reales? Por ejemplo si ya he predicho el día 7-6, al calcular el 14-6 debería coger el dato ya predicho?
 def get_data(row):
     day = predict_data(row['day'])
     hour = row['hour']
+    # pred = data.loc[(data['day'] == day) & (data['hour'] == hour), 'prediction'].iloc[0]
+    # if pred == False:
     pred = data.loc[(data['day'] == day) & (data['hour'] == hour), 'mean_kwh'].iloc[0]
     return pred
 
 # Aquí comienza la predicción:
 
 # Recogemos los datos previamente preparados:
-data = pd.read_csv("../../processed_files/AllData.txt", sep=' ')
+# data = pd.read_csv("../../processed_files/AllData.txt", sep=' ')
+data = pd.read_csv("../../processed_files/AllData2.txt", sep=' ')
 
+# Creamos la nueva columna con las predicciones vacía:
+data['prediction'] = False
+# Aplicamos la función del modelo simple para predecir todas las fechas posibles del dataFrame:
 data['prediction'] = data.apply(get_data, axis=1)
 
-data.to_csv("../../result_files/BasePrediction.txt", sep=" ", quoting=csv.QUOTE_NONE, escapechar=" ", index=False)
-
-# # Obtenemos el resultado de la predicción:
-# prediction_result = data[data["day"] == predict_data(param_date)]
-# real_result = data[data["day"] == (param_date-init_date).days]
-# print(prediction_result[["mean_kwh","hour"]])
-# print(real_result[["mean_kwh","hour"]])
-
-# prediction = prediction_result[["mean_kwh","hour"]]
-# reality = real_result[["mean_kwh","hour"]]
-# lista_error = []
-# for x in range(len(prediction)):
-#     lista_error.append(abs(prediction.iloc[x]["mean_kwh"] - reality.iloc[x]["mean_kwh"]))
-
-# # print(lista_error)
-# print("MAE", param_date,"=>", sum(lista_error) / len(lista_error))
-# # print(result[["mean_kwh","hour"]])
+# data.to_csv("../../result_files/BasePrediction.txt", sep=" ", quoting=csv.QUOTE_NONE, escapechar=" ", index=False)
+data.to_csv("../../result_files/BasePrediction2.txt", sep=" ", quoting=csv.QUOTE_NONE, escapechar=" ", index=False)
