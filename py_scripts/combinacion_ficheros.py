@@ -39,5 +39,10 @@ final_data = data.iloc[:-1]
 # Eliminamos las filas que contengan valores de tiempo que excedan los límites:
 clean_data = final_data[final_data['hour'] <= 23]
 
+# Si deseamos eliminar las columnas Time, count_users y sum_kwh, descomentar las siguiente linea, sino, comentarla:
+clean_data = clean_data.drop(["Time", "count_users", "sum_kwh"], axis = 1)
+clean_data.to_csv("../processed_files/AllData2.txt", sep=" ", quoting=csv.QUOTE_NONE, escapechar=" ", index=False)
+
+# Si hemos comentado lo anterior, descomentar la ultima:
 # Creamos un txt donde guardar los datos para no tener que calcularlos cada vez:
-clean_data.to_csv("../processed_files/AllData.txt", sep=" ", quoting=csv.QUOTE_NONE, escapechar=" ", index=False)
+# clean_data.to_csv("../processed_files/AllData.txt", sep=" ", quoting=csv.QUOTE_NONE, escapechar=" ", index=False)
