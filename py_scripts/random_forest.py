@@ -21,7 +21,8 @@ labels = np.array(data['mean_kwh'])
 
 # Si trabajamos con BasePrediction, usar la primera linea, si es BasePrediction2, la segunda:
 # features = data.drop(['Time', 'sum_kwh', 'count_users', 'mean_kwh'], axis = 1)
-features = data.drop(['mean_kwh'], axis = 1)
+# features = data.drop(['mean_kwh'], axis = 1)
+features = data.drop(['mean_kwh', 'prediction'], axis = 1)
 
 # Guardamos los nombres de las columnas para más tarde:
 feature_list = list(features.columns)
@@ -48,11 +49,11 @@ train_features, test_features, train_labels, test_labels = train_test_split(feat
 # generar una nueva columna que nos dé algo donde fijarnos a la hora de evaluar el modelo:
 
 # Podemos obtener todas las predicciones que realizamos mediante la predicción simple previa:
-baseline_preds = test_features[:, feature_list.index('prediction')]
+# baseline_preds = test_features[:, feature_list.index('prediction')]
 # Para calcular el error que tenemos de media en los 12864 datos:
-baseline_errors = abs(baseline_preds - test_labels)
+# baseline_errors = abs(baseline_preds - test_labels)
 
-print('Average baseline error: ', np.mean(baseline_errors))
+# print('Average baseline error: ', np.mean(baseline_errors))
 # El cual nos da un 0.06 kwh de error. Por lo que los nuevos modelos deben reducir este porcentaje de error.
 
 ########################
