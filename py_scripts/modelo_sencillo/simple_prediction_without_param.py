@@ -2,6 +2,7 @@ import csv
 import datetime
 import holidays
 import pandas as pd
+import numpy as np
 
 # Establecemos los días festivos para preparar los días a utilizar como prediccion:
 dias_festivos = holidays.ES()
@@ -49,6 +50,14 @@ data = pd.read_csv("../../processed_files/AllData2.txt", sep=' ')
 data['prediction'] = False
 # Aplicamos la función del modelo simple para predecir todas las fechas posibles del dataFrame:
 data['prediction'] = data.apply(get_data, axis=1)
+
+# Para poder utilizar una columna como comprobación o límite para saber si el modelo elegido va por buen camino o no,
+# debemos de utilizar un modelo sencillo, como por ejemplo, usar el valor de la semana anterior (simple_prediction_without_param.py), para
+# generar una nueva columna que nos dé algo donde fijarnos a la hora de evaluar el modelo:
+
+baseline_preds = data['prediction']
+baseline_errors = abs(baseline_preds - data['mean_kwh'])
+print('Average baseline error: ', np.mean(baseline_errors))
 
 # data.to_csv("../../result_files/BasePrediction.txt", sep=" ", quoting=csv.QUOTE_NONE, escapechar=" ", index=False)
 data.to_csv("../../result_files/BasePrediction2.txt", sep=" ", quoting=csv.QUOTE_NONE, escapechar=" ", index=False)

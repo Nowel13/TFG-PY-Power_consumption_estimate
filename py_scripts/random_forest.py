@@ -38,24 +38,6 @@ features_array = np.array(features)
 # Utilizaremos un state definido para que siempre nos genere los mismos datos y poder estudiar los resultados:
 train_features, test_features, train_labels, test_labels = train_test_split(features_array, labels, test_size = 0.25, random_state = 5)
 
-# Podemos comprobar que se han generado correctamente todas las variables con sus respectivos tamaños:
-# print('Training Features Shape:', train_features.shape)
-# print('Training Labels Shape:', train_labels.shape)
-# print('Testing Features Shape:', test_features.shape)
-# print('Testing Labels Shape:', test_labels.shape)
-
-# Para poder utilizar una columna como comprobación o límite para saber si el modelo elegido va por buen camino o no,
-# debemos de utilizar un modelo sencillo, como por ejemplo, usar el valor de la semana anterior (simple_prediction_without_param.py), para
-# generar una nueva columna que nos dé algo donde fijarnos a la hora de evaluar el modelo:
-
-# Podemos obtener todas las predicciones que realizamos mediante la predicción simple previa:
-# baseline_preds = test_features[:, feature_list.index('prediction')]
-# Para calcular el error que tenemos de media en los 12864 datos:
-# baseline_errors = abs(baseline_preds - test_labels)
-
-# print('Average baseline error: ', np.mean(baseline_errors))
-# El cual nos da un 0.06 kwh de error. Por lo que los nuevos modelos deben reducir este porcentaje de error.
-
 ########################
 ##### RANDOMFOREST #####
 ########################
