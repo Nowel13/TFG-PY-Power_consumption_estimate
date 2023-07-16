@@ -36,13 +36,13 @@ features_array = np.array(features)
 
 # Con ambos arrays, podemos hacer uso de sklearn dividir los datos en test y entrenamiento.
 # Utilizaremos un state definido para que siempre nos genere los mismos datos y poder estudiar los resultados:
-train_features, test_features, train_labels, test_labels = train_test_split(features_array, labels, test_size = 0.25, random_state = 5)
+train_features, test_features, train_labels, test_labels = train_test_split(features_array, labels, test_size = 0.25)
 
 ########################
 ##### RANDOMFOREST #####
 ########################
 
-rf = RandomForestRegressor(n_estimators = 1000, random_state = 5)
+rf = RandomForestRegressor(n_estimators = 1000)
 
 rf.fit(train_features, train_labels)
 predictions = rf.predict(test_features)

@@ -13,9 +13,9 @@ def calculate_date(days):
 def is_holiday(day):
     return day in holiday_days
 
-data = pd.read_csv("../result_files/BasePrediction2.txt", sep=' ')
+data = pd.read_csv("../../result_files/BasePrediction2.txt", sep=' ')
 
 data["date"] = data["day"].apply(lambda x: calculate_date(x))
 data["holiday"] = data["date"].apply(lambda x: is_holiday(x))
 
-data.to_csv("../result_files/transformed_data.txt", sep=" ", quoting=csv.QUOTE_NONE, escapechar=" ", index=False)
+data.to_csv("../../result_files/transformed_data.txt", sep=" ", quoting=csv.QUOTE_NONE, escapechar=" ", index=False)

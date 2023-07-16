@@ -85,8 +85,8 @@ def prepare_file(pathname, name):
 ##########################################
 
 for i in range(6):
-    pathname = "../data_files/File" + str(i+1) + ".txt"
-    name = "../processed_files/Archivo" + str(i+1) + ".txt"
+    pathname = "../../data_files/File" + str(i+1) + ".txt"
+    name = "../../processed_files/Archivo" + str(i+1) + ".txt"
     prepare_file(pathname, name)
 
 ##########################################

@@ -12,12 +12,12 @@ def divide_time_data(datos):
     return data
 
 
-data1 = pd.read_csv("../processed_files/Archivo1.txt", sep=' ')
-data2 = pd.read_csv("../processed_files/Archivo2.txt", sep=' ')
-data3 = pd.read_csv("../processed_files/Archivo3.txt", sep=' ')
-data4 = pd.read_csv("../processed_files/Archivo4.txt", sep=' ')
-data5 = pd.read_csv("../processed_files/Archivo5.txt", sep=' ')
-data6 = pd.read_csv("../processed_files/Archivo6.txt", sep=' ')
+data1 = pd.read_csv("../../processed_files/Archivo1.txt", sep=' ')
+data2 = pd.read_csv("../../processed_files/Archivo2.txt", sep=' ')
+data3 = pd.read_csv("../../processed_files/Archivo3.txt", sep=' ')
+data4 = pd.read_csv("../../processed_files/Archivo4.txt", sep=' ')
+data5 = pd.read_csv("../../processed_files/Archivo5.txt", sep=' ')
+data6 = pd.read_csv("../../processed_files/Archivo6.txt", sep=' ')
 
 # Unimos los datos de todos los ficheros de consumo:
 data = pd.concat([data1, data2, data3, data4, data5, data6])
@@ -40,7 +40,7 @@ clean_data = final_data[final_data['hour'] <= 23]
 
 # Si deseamos eliminar las columnas Time, count_users y sum_kwh, descomentar las siguiente linea, sino, comentarla:
 clean_data = clean_data.drop(["Time", "count_users", "sum_kwh"], axis = 1)
-clean_data.to_csv("../processed_files/AllData2.txt", sep=" ", quoting=csv.QUOTE_NONE, escapechar=" ", index=False)
+clean_data.to_csv("../../processed_files/AllData2.txt", sep=" ", quoting=csv.QUOTE_NONE, escapechar=" ", index=False)
 
 # Si hemos comentado lo anterior, descomentar la ultima:
 # Creamos un txt donde guardar los datos para no tener que calcularlos cada vez:

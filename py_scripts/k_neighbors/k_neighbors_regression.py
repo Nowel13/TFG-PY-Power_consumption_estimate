@@ -1,11 +1,7 @@
 import pandas as pd
 import numpy as np
+from sklearn.neighbors import KNeighborsRegressor
 from sklearn.model_selection import train_test_split
-from sklearn import linear_model
-from sklearn.metrics import mean_squared_error, r2_score
-import datetime
-import matplotlib.pyplot as plt
-from sklearn.preprocessing import StandardScaler
 
 data = pd.read_csv("../../result_files/transformed_data.txt", sep=' ')
 
@@ -18,11 +14,9 @@ labels = np.array(data['mean_kwh'])
 
 # Eliminamos del dataFrame las columnas que no se van a utilizar para el entrenamiento del modelo,
 # en nuestro caso, solo necesitamos las columnas de Dia y Hora y la media de kwh:
-features = data.drop(['mean_kwh', 'prediction', 'date'], axis = 1)
 
-# En caso de querer escalar las variables, utilizar la siguiente variable. En este caso, hemos 
-# comprobado que no es útil:
-# scale = StandardScaler()
+# Si trabajamos con BasePrediction, usar la primera linea, si es BasePrediction2, la segunda:
+features = data.drop(['mean_kwh', 'prediction', 'date'], axis = 1)
 
 # Guardamos los nombres de las columnas para más tarde:
 feature_list = list(features.columns)
@@ -36,30 +30,13 @@ features_array = np.array(features)
 
 # Con ambos arrays, podemos hacer uso de sklearn dividir los datos en test y entrenamiento.
 # Utilizaremos un state definido para que siempre nos genere los mismos datos y poder estudiar los resultados:
-train_features, test_features, train_labels, test_labels = train_test_split(features_array, labels, test_size = 0.25, random_state = 1)
+train_features, test_features, train_labels, test_labels = train_test_split(features_array, labels, test_size = 0.25)
 
-###############################
-##### MULTIPLE REGRESSION #####
-###############################
+knn = KNeighborsRegressor(n_neighbors=3, weights='distance')
 
-rf = linear_model.LinearRegression()
+knn.fit(train_features, train_labels)
+predictions = knn.predict(test_features)
 
-rf.fit(train_features, train_labels)
-
-predictions = rf.predict(test_features)
-
-# Los coeficientes que se aplican a las variables del modelo:
-print("Coefficients: \n", rf.coef_)
-
-# Obtenemos el error cuadrático medio, el cual nos indica lo siguiente:
-# Si es cercano a 0, el modelo no representa una relación correcta entre variables.
-# Si es cercano a 1, el modelo representa una relación acertada entre variables.
-print("Mean squared error: %.2f" % mean_squared_error(test_labels, predictions))
-
-# Coeficiente de determinación:
-print("Coefficient of determination: %.2f" % r2_score(test_labels, predictions))
-
-# Calculo de MAE y accuracy como en los demás modelos:
 errors = abs(predictions - test_labels)
 
 print('Mean Absolute Error (MAE):', np.mean(errors), 'kwh')
