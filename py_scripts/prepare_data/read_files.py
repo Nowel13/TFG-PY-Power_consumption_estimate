@@ -39,7 +39,7 @@ def group_data_per_user(datos):
     start_time = time.time()
     datos = datos.groupby(["MeterID","Time"], sort=False).agg(kwh=("kwh", "sum"), half_hours=("kwh","count")).reset_index()
     finish_time = time.time()
-    print("ha tardado: ", finish_time - start_time, " en agrupar por usuario.")
+    print("ha tardado: ", finish_time - start_time, " en agrupar por usuario y marca de tiempo.")
     return datos
 
 
@@ -50,7 +50,7 @@ def prepare_column(datos):
     datos.loc[datos["half_hours"] == 1, "kwh"] *= 2
     datos = datos.drop(["half_hours"], axis=1)
     finish_time = time.time()
-    print("ha tardado: ", finish_time - start_time, " en agrupar por usuario.")
+    print("ha tardado: ", finish_time - start_time, " en corregir los datos incompletos.")
     return datos
 
 # Agrupamos los datos por marca de tiempo, de forma que se sumen todos los valores de kwh y el número de usuarios con registros

@@ -28,10 +28,7 @@ def predict_data(days):
         return days
     else:
         return (date_to_copy - init_date).days 
-   
 
-# TODO: Debería de poder coger los resultados que he estado calculando en cada predicción en lugar de seguir cogiendo los datos
-# de consumo de la columna de datos reales? Por ejemplo si ya he predicho el día 7-6, al calcular el 14-6 debería coger el dato ya predicho?
 def get_data(row):
     day = predict_data(row['day'])
     hour = row['hour']
@@ -44,7 +41,7 @@ def get_data(row):
 
 # Recogemos los datos previamente preparados:
 # data = pd.read_csv("../../processed_files/AllData.txt", sep=' ')
-data = pd.read_csv("../../processed_files/AllData2.txt", sep=' ')
+data = pd.read_csv("../../processed_files/AllData.txt", sep=' ')
 
 # Creamos la nueva columna con las predicciones vacía:
 data['prediction'] = False
@@ -60,4 +57,4 @@ baseline_errors = abs(baseline_preds - data['mean_kwh'])
 print('Average baseline error: ', np.mean(baseline_errors))
 
 # data.to_csv("../../result_files/BasePrediction.txt", sep=" ", quoting=csv.QUOTE_NONE, escapechar=" ", index=False)
-data.to_csv("../../result_files/BasePrediction2.txt", sep=" ", quoting=csv.QUOTE_NONE, escapechar=" ", index=False)
+# data.to_csv("../../result_files/BasePrediction2.txt", sep=" ", quoting=csv.QUOTE_NONE, escapechar=" ", index=False)
