@@ -36,7 +36,7 @@ features_array = np.array(features)
 
 # Con ambos arrays, podemos hacer uso de sklearn dividir los datos en test y entrenamiento.
 # Utilizaremos un state definido para que siempre nos genere los mismos datos y poder estudiar los resultados:
-train_features, test_features, train_labels, test_labels = train_test_split(features_array, labels, test_size = 0.25, random_state = 1)
+train_features, test_features, train_labels, test_labels = train_test_split(features_array, labels, test_size = 0.25)
 
 ###############################
 ##### MULTIPLE REGRESSION #####

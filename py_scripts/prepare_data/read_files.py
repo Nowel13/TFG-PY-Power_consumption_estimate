@@ -1,20 +1,7 @@
 import csv
 import time
 import pandas as pd
-
-
-# Comprueba si el número que se le pasa a la función es par:
-def is_even(x):
-    return x % 2 == 0
-
-
-# Transforma los valores de tiempo dependiendo de su tramo horario (se mantiene si es impar, se reduce en 1 si es par): 
-def transform_time(time):
-    if is_even(time):
-        return time - 1
-    else:
-        return time
-
+import numpy as np
 
 # Lectura del documento, se pasa la ruta del archivo como parámetro:
 def read_file(pathname):
@@ -24,7 +11,7 @@ def read_file(pathname):
         pathname,
         sep=' ',
         header=None, 
-        names=['MeterID', 'Time', 'kWh']
+        names=['MeterID', 'Time', 'kwh']
                     )
     finish_read_time = time.time()
     print("Ha tardado: ", finish_read_time - start_read_time, " en leer el archivo csv.")
@@ -32,35 +19,48 @@ def read_file(pathname):
 
 
 # Transforma todos los datos de tiempo del archivo leído con la función definida anteriormente:
+# Actualización: ----------------------
+# Gracias a la vectorización, podemos aplicar la función a nivel de array en lugar de fila, lo
+# que supone un aumento del rendimiento de prácticamente un 90%:
 def transform_data(datos):
-    data = datos.copy(deep=True)
     start_time = time.time()
-    data['Time'] = data['Time'].apply(lambda x: transform_time(x))
+    datos['Time'] = np.where(datos['Time'] % 2 == 0, datos['Time'] - 1, datos['Time'])
     finish_time = time.time()
     print("Ha tardado: ", finish_time - start_time, " en transformar los datos de tiempo.")
-    return data
-
+    return datos
 
 # Agrupamos los datos por usuario y marca de tiempo, para que se junten los pares de valores de cada hora.
 # Añadimos a la agrupación los parámetros "sort=False" para mejorar el rendimiento de la función y 
-# llamamos a reset_index() para mantener las columnas previas y que no se formen varios subíndices:
+# llamamos a reset_index() para mantener las columnas previas y que no se formen varios subíndices.
+# Actualización: ---------------------
+# Hemos añadido una columna "half_hours", la cual nos indica si se han agrupado 1 o 2 medias horas,
+# de esta forma detectamos las horas incompletas de datos.
 def group_data_per_user(datos):
     start_time = time.time()
-    data = datos.groupby(["MeterID","Time"], sort=False).sum().reset_index()
+    datos = datos.groupby(["MeterID","Time"], sort=False).agg(kwh=("kwh", "sum"), half_hours=("kwh","count")).reset_index()
     finish_time = time.time()
     print("ha tardado: ", finish_time - start_time, " en agrupar por usuario.")
-    return data
+    return datos
 
+
+# Corrige los datos que cuentan con solo media hora multiplicando sus valores por 2
+# y eliminamos la columna ahora que no es necesaria para liberar algo de memoria:
+def prepare_column(datos):
+    start_time = time.time()
+    datos.loc[datos["half_hours"] == 1, "kwh"] *= 2
+    datos = datos.drop(["half_hours"], axis=1)
+    finish_time = time.time()
+    print("ha tardado: ", finish_time - start_time, " en agrupar por usuario.")
+    return datos
 
 # Agrupamos los datos por marca de tiempo, de forma que se sumen todos los valores de kwh y el número de usuarios con registros
 # de consumo en cada marca de tiempo:
 def group_data_per_time(datos):
     start_time = time.time()
-    # data = datos.groupby("Time").agg(sum_kwh=("kWh", "sum"), mean_kwh=("kWh","mean"), count_users=("kWh","count")).reset_index()
-    data = datos.groupby("Time").agg(sum_kwh=("kWh", "sum"), count_users=("kWh","count")).reset_index()
+    datos = datos.groupby("Time").agg(sum_kwh=("kwh", "sum"), count_users=("kwh","count")).reset_index()
     finish_time = time.time()
     print("ha tardado: ", finish_time - start_time, " en agrupar por tiempo.")
-    return data
+    return datos
 
 
 # Escribimos el dataFrame resultante en un csv para poder usarlo más tarde:
@@ -76,7 +76,8 @@ def prepare_file(pathname, name):
     datos = read_file(pathname)
     datos_transformados = transform_data(datos)
     datos_agrupados_por_usuario = group_data_per_user(datos_transformados)
-    datos_finales = group_data_per_time(datos_agrupados_por_usuario)
+    datos_arreglados = prepare_column(datos_agrupados_por_usuario)
+    datos_finales = group_data_per_time(datos_arreglados)
     write_on_csv(datos_finales, name)
 
 
