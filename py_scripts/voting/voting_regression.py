@@ -1,7 +1,10 @@
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
+from sklearn.ensemble import VotingRegressor
+from sklearn.linear_model import LinearRegression
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.neighbors import KNeighborsRegressor
 
 data = pd.read_csv("../../result_files/final_data.txt", sep=' ')
 
@@ -30,18 +33,22 @@ features_array = np.array(features)
 # Se podría Utilizar un state definido (random_state=?) para que siempre nos genere los mismos datos y poder estudiar los resultados.
 train_features, test_features, train_labels, test_labels = train_test_split(features_array, labels, test_size = 0.25)
 
-########################
-##### RANDOMFOREST #####
-########################
+##################
+##### VOTING #####
+##################
 
-# Creamos el modelo de RandomForest:
-rf = RandomForestRegressor(n_estimators = 10)
+estimator_1 = RandomForestRegressor(n_estimators=100)
+estimator_2 = LinearRegression()
+estimator_3 = KNeighborsRegressor()
+
+# Creamos el modelo de Voting:
+mlp = VotingRegressor(estimators=[('lr', estimator_1), ('rf', estimator_2), ('r3', estimator_3)])
 
 # Entrenamos el modelo:
-rf.fit(train_features, train_labels)
+mlp.fit(train_features, train_labels)
 
 # Realizamos las predicciones de los datos de test:
-predictions = rf.predict(test_features)
+predictions = mlp.predict(test_features)
 
 # Calculamos el error absoluto de todos los resultados de la predicción:
 errors = abs(predictions - test_labels)
