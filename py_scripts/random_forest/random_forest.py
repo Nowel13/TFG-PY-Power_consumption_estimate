@@ -2,9 +2,10 @@ import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
+import matplotlib.pyplot as plt
 
 data = pd.read_csv("../../result_files/final_data.txt", sep=' ')
-
+to_predict = pd.read_csv("../../result_files/to_predict.txt", sep=' ')
 ###########################################
 ### Split data into features and labels ###
 ###########################################
@@ -15,9 +16,11 @@ labels = np.array(data['mean_kwh'])
 # Eliminamos del dataFrame las columnas que no se van a utilizar para el entrenamiento del modelo,
 # en este caso, la columna objectivo, y las columnas de dia y hora:
 features = data.drop(['mean_kwh', 'day', 'hour'], axis = 1)
+clean_to_predict = to_predict.drop(['day', 'hour'], axis = 1)
 
 # Guardamos los nombres de las columnas por si queremos mostrar los datos en gráficas:
-# feature_list = list(features.columns)
+feature_list = list(features.columns)
+to_predict_list = list(to_predict.columns)
 
 # Con el nuevo dataFrame generado, creamos otro array de numpy para el entrenamiento:
 features_array = np.array(features)
@@ -56,11 +59,31 @@ accuracy = 100 - np.mean(mape)
 print('Precisión del modelo:', accuracy, '%.')
 print('Precisión del modelo (2 decimales):', round(accuracy, 2), '%.')
 
-#################################
-#################################
-### Para mostrar las gráficas:###
-#################################
-#################################
+
+real_predictions = rf.predict(clean_to_predict)
+
+print(real_predictions)
+
+days = to_predict['day']
+hours = to_predict['hour']
+to_show = pd.DataFrame(data={
+    "day": days,
+    "hour": hours,
+    "prediction": real_predictions
+})
+
+plt.figure()
+plt.plot(to_show.index, to_show['prediction'], 'b-', label="kwh")
+plt.xlabel('Hours from last day with data')
+plt.ylabel('Mean kwh for each user')
+plt.title('Predicted values for the next 3 days')
+plt.show()
+
+##################################
+##################################
+### Para mostrar las gráficas: ###
+##################################
+##################################
 # init_date = datetime.datetime(year=2009, month=1, day=1, hour=0)
 
 # def calculate_date(row):
