@@ -2,6 +2,7 @@ import csv
 import time
 import pandas as pd
 import numpy as np
+import os
 
 # Lectura del documento, se pasa la ruta del archivo como parámetro:
 def read_file(pathname):
@@ -16,7 +17,6 @@ def read_file(pathname):
     finish_read_time = time.time()
     print("Ha tardado: ", finish_read_time - start_read_time, " en leer el archivo csv.")
     return data
-
 
 # Transforma todos los datos de tiempo del archivo leído con la función definida anteriormente:
 # Actualización: ----------------------
@@ -85,18 +85,18 @@ def prepare_file(pathname, name):
 ################## MAIN ##################
 ##########################################
 
-for i in range(6):
-    pathname = "../../data_files/File" + str(i+1) + ".txt"
-    name = "../../processed_files/Archivo" + str(i+1) + ".txt"
-    prepare_file(pathname, name)
+def main():
+    path = 'data_files/'
+    result_path = 'processed_files/'
+    for root_folder, folders, files in os.walk(path):
+        for file in files:
+            prepare_file(path + file, result_path + file)
+            print("Finished file: " + file)
+
 
 ##########################################
 ################ END MAIN ################
 ##########################################
-
-
-
-
 
 
 ##########################################
@@ -113,6 +113,10 @@ for i in range(6):
 
 
 
+# for i in range(6):
+#     pathname = "../../data_files/File" + str(i+1) + ".txt"
+#     name = "../../processed_files/Archivo" + str(i+1) + ".txt"
+#     prepare_file(pathname, name)
 
 # Divide la columna tiempo en dos partes, los primeros 3 digitos indican el día y los dos últimos el tramo horario:
 # Con esta opción tarda un poco menos que con la de abajo:
