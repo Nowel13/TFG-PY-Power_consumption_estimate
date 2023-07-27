@@ -1,7 +1,7 @@
-import csv
-import pandas as pd
-import time
 import os
+import csv
+import time
+import pandas as pd
 
 # Mejorado por vectorizacion:
 # def divide_time(time):

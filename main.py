@@ -1,8 +1,6 @@
-import os
-from fastapi import FastAPI, UploadFile, File
-from typing import List
-import pandas as pd
 import time
+from typing import List
+from fastapi import FastAPI, UploadFile, File
 from py_scripts.prepare_data.read_files import main as read_files
 from py_scripts.prepare_data.merge_results import main as merge_data
 from py_scripts.prepare_data.prepare_final_state import main as clean_data

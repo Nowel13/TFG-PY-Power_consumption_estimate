@@ -1,7 +1,7 @@
 import csv
-import pandas as pd
 import datetime
 import holidays
+import pandas as pd
 
 # Este script recibe un parametro (int) a través del cual se elige cuántas variables independientes queremos utilizar para 
 # las predicciones en un futuro.

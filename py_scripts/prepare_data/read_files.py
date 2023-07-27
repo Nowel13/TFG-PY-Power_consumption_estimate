@@ -1,8 +1,8 @@
+import os
 import csv
 import time
-import pandas as pd
 import numpy as np
-import os
+import pandas as pd
 
 # Lectura del documento, se pasa la ruta del archivo como parámetro:
 def read_file(pathname):
@@ -87,6 +87,9 @@ def prepare_file(pathname, name):
 
 def main():
     path = 'data_files/'
+    # Cuando deje de hacer pruebas, la lectura de ficheros deberá realizarse desde esta otra carpeta, 
+    # que es donde se almacenan los archivos que se suban con la API (comentar la linea anterior y descomentar la siguiente):
+    # path = 'files/'
     result_path = 'processed_files/'
     for root_folder, folders, files in os.walk(path):
         for file in files:
