@@ -57,7 +57,11 @@ def prepare_predictions(data, max, date):
 
 def main(max_days_before, init_date):
 
-    date = datetime.datetime(year=2009, month=1, day=1, hour=0)
+    if init_date is None:
+        date = datetime.datetime(year=2009, month=1, day=1, hour=0)
+        print(date)
+    else:
+        date = datetime.datetime.strptime(init_date, "%Y-%m-%d").date()
 
     # Obtenemos los datos iniciales de 'AllData.txt':
     data = pd.read_csv('result_files/AllData.txt', sep=' ')
@@ -73,6 +77,8 @@ def main(max_days_before, init_date):
     # Escribimos los resultados en el archivo 'final_data.txt' de forma que podamos utilizar los resultados más adelante en otros scripts:
     final_data.to_csv('result_files/final_data.txt', sep=' ', quoting=csv.QUOTE_NONE, escapechar=' ', index=False)
 
-
+    # Preparamos un nuevo dataframe con los datos que deberemos de predecir y sus respectivas variables independientes rellenas:
     to_predict_df = prepare_predictions(final_data, max_days_before, date)
+
+    # Guardamos este último dataframe en un archivo para poder acceder a él desde otros scripts:
     to_predict_df.to_csv('result_files/to_predict.txt', sep=' ', quoting=csv.QUOTE_NONE, escapechar=' ', index=False)
