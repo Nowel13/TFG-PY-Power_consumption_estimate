@@ -85,16 +85,21 @@ def prepare_file(pathname, name):
 ################## MAIN ##################
 ##########################################
 
-def main():
+# Se utiliza cuando tenemos datos almacenados en la carpeta "files":
+def read_files():
     # path = 'data_files/'
-    # Cuando deje de hacer pruebas, la lectura de ficheros deberá realizarse desde esta otra carpeta, 
-    # que es donde se almacenan los archivos que se suban con la API (comentar la linea anterior y descomentar la siguiente):
-    path = 'files/'
-    result_path = 'processed_files/'
+    path = 'data/files/'
+    result_path = 'data/processed_files/'
     for root_folder, folders, files in os.walk(path):
         for file in files:
             prepare_file(path + file, result_path + file)
             print("Finished file: " + file)
+
+# Este otro se utiliza cuando se reciben directamente los dataframes procesados desde el front:
+def get_file(dataframes):
+    dfs = [(df["filename"], pd.read_json(df['dataframe'])) for df in dataframes]
+    for filename, file in dfs:
+        write_on_csv(file, "data/processed_files/" + filename)
 
 
 ##########################################

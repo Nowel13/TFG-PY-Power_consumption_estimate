@@ -41,7 +41,7 @@ def get_data(row):
 
 # Recogemos los datos previamente preparados:
 # data = pd.read_csv("../../processed_files/AllData.txt", sep=' ')
-data = pd.read_csv("../../processed_files/AllData.txt", sep=' ')
+data = pd.read_csv("../../data/processed_files/AllData.txt", sep=' ')
 
 # Creamos la nueva columna con las predicciones vacía:
 data['prediction'] = False
@@ -56,5 +56,5 @@ baseline_preds = data['prediction']
 baseline_errors = abs(baseline_preds - data['mean_kwh'])
 print('Average baseline error: ', np.mean(baseline_errors))
 
-# data.to_csv("../../result_files/BasePrediction.txt", sep=" ", quoting=csv.QUOTE_NONE, escapechar=" ", index=False)
-# data.to_csv("../../result_files/BasePrediction2.txt", sep=" ", quoting=csv.QUOTE_NONE, escapechar=" ", index=False)
+# data.to_csv("../../final_files/BasePrediction.txt", sep=" ", quoting=csv.QUOTE_NONE, escapechar=" ", index=False)
+# data.to_csv("../../final_files/BasePrediction2.txt", sep=" ", quoting=csv.QUOTE_NONE, escapechar=" ", index=False)

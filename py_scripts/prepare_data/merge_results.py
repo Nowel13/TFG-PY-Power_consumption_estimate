@@ -23,7 +23,7 @@ def divide_time_data(datos):
 # Para poder llamar al método desde la api hemos creado un método main que recorre todos los ficheros que haya en la carpeta "files":
 def main():
     start_time = time.time()
-    path = "processed_files/"
+    path = "data/processed_files/"
     data = None
     for root_folder, folders, files in os.walk(path):
         for file in files:
@@ -56,4 +56,4 @@ def main():
     finish_time = time.time()
 
     print("finished in: ", finish_time - start_time)
-    clean_data.to_csv("result_files/AllData.txt", sep=" ", quoting=csv.QUOTE_NONE, escapechar=" ", index=False)
+    clean_data.to_csv("data/final_files/AllData.txt", sep=" ", quoting=csv.QUOTE_NONE, escapechar=" ", index=False)

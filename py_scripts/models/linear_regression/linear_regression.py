@@ -4,7 +4,7 @@ from sklearn.model_selection import train_test_split
 from sklearn import linear_model
 from sklearn.metrics import mean_squared_error, r2_score
 
-data = pd.read_csv("../../result_files/final_data.txt", sep=' ')
+data = pd.read_csv("../../data/final_files/final_data.txt", sep=' ')
 
 ###########################################
 ### Split data into features and labels ###

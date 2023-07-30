@@ -69,7 +69,7 @@ def predicted_day(day):
 # Aquí comienza la predicción:
 
 # Recogemos los datos previamente preparados:
-data = pd.read_csv("../../processed_files/AllData.txt", sep=' ')
+data = pd.read_csv("../../data/processed_files/AllData.txt", sep=' ')
 
 # Coger la ultima day del archivo de datos para saber si en el 
 # bucle debo retroceder mas en el tiempo:

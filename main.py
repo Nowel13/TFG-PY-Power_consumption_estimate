@@ -1,59 +1,57 @@
 import os
 import time
-from typing import List
+import pandas as pd
+from typing import List, Dict, Any
 from fastapi import FastAPI, UploadFile, File
-from py_scripts.prepare_data.read_files import main as read_data
+from starlette.responses import FileResponse
+from zipfile import ZipFile
+from py_scripts.prepare_data.read_files import get_file as save_data
+from py_scripts.prepare_data.read_files import read_files as read_data
 from py_scripts.prepare_data.merge_results import main as merge_data
 from py_scripts.prepare_data.prepare_final_state import main as clean_data
-from py_scripts.models.ada_boost.ada_boost_regression import main as abr
-from py_scripts.models.bagging.bagging_regression import main as br
-from py_scripts.models.extra_trees.extra_trees_regression import main as etr
-from py_scripts.models.gradient_boosting.gradient_boosting_regression import main as gbr
-from py_scripts.models.k_neighbors.k_neighbors_regression import main as knr
-from py_scripts.models.linear_regression.linear_regression import main as lr
-from py_scripts.models.neural_network.mlp_regression import main as mr
-from py_scripts.models.radius_neighbors.radius_neighbors_regression import main as rnr
-from py_scripts.models.random_forest.random_forest import main as rf
-from py_scripts.models.stacking.stacking_regression import main as sr
-from py_scripts.models.voting.voting_regression import main as vr
+from py_scripts.general_model import main as predict
 
 app = FastAPI()
 
+# Devuelve el número de ficheros que se hayan subido a la API:
 @app.get("/")
 def number_of_files():
 	return { "n_files": get_n_files() }
 
-@app.post("/file")
+# Permite subir y guardar un único fichero a la API:
+@app.post("/upload_file")
 async def upload_file(file: UploadFile):
-	file_location = 'files/' + file.filename
+	file_location = 'data/files/' + file.filename
 	with open(file_location, 'wb') as out_file:
 		contents = await file.read()
 		out_file.write(contents)
 	return {"info": f"file '{file.filename}' saved at '{file_location}'"}
 
-@app.post("/files")
+# Versión para recibir los archivos directamente y almacenarlos en disco para su 
+# posterior procesamiento:
+@app.post("/upload_files")
 async def upload_files(files: List[UploadFile] = File(...)):
 	for file in files:
-		file_location = 'files/' + file.filename
+		file_location = 'data/files/' + file.filename
 		with open(file_location, 'wb') as out_file:
 			contents = await file.read()
 			out_file.write(contents)
 		print(f"Archivo escrito en : {file_location}")
 	return {"info": "files saved correctly"}
 
-def remove_file(path):
-	# removing the file
-	if not os.remove(path):
-		# success message
-		return f"{path} is removed successfully"
-	else:
-		# failure message
-		return f"Unable to delete the {path}"
+# Versión más rápida, recibe los archivos ya procesados desde el front
+# pero tarda muchísimo menos:
+@app.post("/upload_processed_files")
+async def upload__processed_files(files: List[Dict[str, Any]]):
+	save_data(files)
+	return {"info": "files saved correctly"}
 
+# Permite eliminar todos los archivos subidos y procesados para poder
+# comenzar de nuevo:
 @app.delete("/delete")
 def delete():
 	response = {}
-	folder_names = ["files/", "processed_files", "result_files"]
+	folder_names = ["data/files", "data/processed_files", "data/final_files", "data/results", "data/zip"]
 	for folder in folder_names:
 		for root_folder, folders, files in os.walk(folder):
 			for file in files:
@@ -61,17 +59,8 @@ def delete():
 				response[file] = remove_file(file_path)
 	return response
 
-# @app.delete("/delete_result_files")
-# def delete():
-# 	for root_folder, folders, files in os.walk("processed_files/"):
-# 		for file in files:
-# 			file_path = os.path.join(root_folder, file)
-# 			remove_file(file_path)
-# 	# for root_folder, folders, files in os.walk("result_files/"):
-# 	# 	for file in files:
-# 	# 		file_path = os.path.join(root_folder, file)
-# 	# 		remove_file(file_path)
-
+# En caso de tener los archivos almacenados en disco sin procesar, este
+# método los procesa y almacena en processed_files/:
 @app.get("/read")
 def read_files():
   start = time.time()
@@ -79,6 +68,8 @@ def read_files():
   finish = time.time()
   return f"done in {finish-start} seconds"
 
+# Permite unificar los archivos de datos procesados en uno sólo para su
+# posterior uso:
 @app.get("/merge")
 def merge_files():
   start = time.time()
@@ -86,6 +77,7 @@ def merge_files():
   finish = time.time()
   return f"done in {finish-start} seconds"
 
+# Termina de limpiar y preparar los datos unificados, para el estudio:
 @app.get("/clean")
 def clean_files(max_days_before: int, init_date = None):
   start = time.time()
@@ -93,47 +85,24 @@ def clean_files(max_days_before: int, init_date = None):
   finish = time.time()
   return f"done in {finish-start} seconds"
 
+# Unifica, limpia y prepara los datos para el estudio, pero con una
+# única llamada:
 @app.get("/process")
-def process_data(max_days_before: int, init_date = "2009-01-01"):
+def process_data(max_days_before: str, init_date = "2009-01-01"):
 	start = time.time()
-	print(init_date)
-	read_data()
 	merge_data()
-	clean_data(max_days_before, init_date)
+	clean_data(int(max_days_before)	, init_date)
 	finish = time.time()
 	return {
 		"n_files": get_n_files(),
 		"message": f"Done in {finish-start} seconds",
 	}
 
+# Aplica el modelo elegido y con los parámetros establecidos:
 @app.post("/apply")
-def apply_model(model_name: str):
+def apply_model(model_name: str, parameters = {}):
 	start = time.time()
-	match model_name:
-		case "ada_boost":
-			abr()
-		case "bagging":
-			br()
-		case "extra_trees":
-			etr
-		case "gradient_boosting":
-			gbr()
-		case "k_neighbors":
-			knr()
-		case "linear_regression":
-			lr()
-		case "neural_network":
-			mr()
-		case "radius_neighbors":
-			rnr()
-		case "random_forest":
-			rf()
-		case "stacking":
-			sr()
-		case "voting":
-			vr()
-		case _:
-			rf()
+	predict(model_name, parameters)
 	finish = time.time()
 	response = {
 		"selected": model_name,
@@ -141,12 +110,31 @@ def apply_model(model_name: str):
 	}
 	return response
 
+# Devuelve dos archivos, uno con el dataframe que contiene los resultados
+# de las predicciones y otro con la gráfica resultante:
 @app.get("/results")
 def get_result_graphic():
-	for root_folder, folders, files in os.walk("media/"):
-		return { "image": files[0] }
+	response = {}
+	for root_folder, folders, files in os.walk("data/results/"):
+		with ZipFile('data/zip/files.zip', 'w') as zipF:
+			for file in files:
+				zipF.write(f"data/results/{file}")
+	return FileResponse('data/zip/files.zip', media_type='application/octet-stream')
 
+
+####################################
+####### FUNCIONES AUXILIARES #######
+####################################
+
+# Permite indicar el número de archivos que hay subidos a la API actualmente:
 def get_n_files():
-	for root_folder, folders, files in os.walk("files/"):
+	for root_folder, folders, files in os.walk("data/processed_files/"):
 		n_files = len(files)
 	return n_files
+
+# Elimina el archivo que se le pase por parámetro:
+def remove_file(path):
+	if not os.remove(path):
+		return f"{path} is removed successfully"
+	else:
+		return f"Unable to delete the {path}"

@@ -5,8 +5,8 @@ from sklearn.ensemble import RandomForestRegressor
 import matplotlib.pyplot as plt
 
 def main():
-    data = pd.read_csv("result_files/final_data.txt", sep=' ')
-    to_predict = pd.read_csv("result_files/to_predict.txt", sep=' ')
+    data = pd.read_csv("data/final_files/final_data.txt", sep=' ')
+    to_predict = pd.read_csv("data/final_files/to_predict.txt", sep=' ')
     ###########################################
     ### Split data into features and labels ###
     ###########################################
@@ -76,4 +76,4 @@ def main():
     plt.xlabel('Hours from last day with data')
     plt.ylabel('Mean kwh for each user')
     plt.title('Predicted values for the next 3 days')
-    plt.savefig('media/prediction.png')
+    plt.savefig('data/results/prediction.png')

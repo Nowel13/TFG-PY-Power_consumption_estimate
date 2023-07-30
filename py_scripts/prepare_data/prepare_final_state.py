@@ -34,7 +34,6 @@ def add_days_columns(df, max):
     # Devolvemos el resultado final:
     return df
 
-
 def take_data_from(row, data, real_day):
     df = data[(data['day'] == row['day']-real_day)]
     return df[df['hour'] == row['hour']]['mean_kwh'].iloc[0]
@@ -64,7 +63,7 @@ def main(max_days_before, init_date):
         date = datetime.datetime.strptime(init_date, "%Y-%m-%d").date()
 
     # Obtenemos los datos iniciales de 'AllData.txt':
-    data = pd.read_csv('result_files/AllData.txt', sep=' ')
+    data = pd.read_csv('data/final_files/AllData.txt', sep=' ')
 
     # Computamos la columna 'holiday' con la funcion definida anteriormente (Se podría comprobar si al vectorizar reduce el tiempo de 
     # ejecución, pero ya de por sí tarda muy poco):
@@ -74,11 +73,11 @@ def main(max_days_before, init_date):
     # Generamos el dataframe final con las nuevas columnas añadidas:
     final_data = add_days_columns(data, max_days_before)
 
-    # Escribimos los resultados en el archivo 'final_data.txt' de forma que podamos utilizar los resultados más adelante en otros scripts:
-    final_data.to_csv('result_files/final_data.txt', sep=' ', quoting=csv.QUOTE_NONE, escapechar=' ', index=False)
-
     # Preparamos un nuevo dataframe con los datos que deberemos de predecir y sus respectivas variables independientes rellenas:
     to_predict_df = prepare_predictions(final_data, max_days_before, date)
 
+    # Escribimos los resultados en el archivo 'final_data.txt' de forma que podamos utilizar los resultados más adelante en otros scripts:
+    final_data.to_csv('data/final_files/final_data.txt', sep=' ', quoting=csv.QUOTE_NONE, escapechar=' ', index=False)
+
     # Guardamos este último dataframe en un archivo para poder acceder a él desde otros scripts:
-    to_predict_df.to_csv('result_files/to_predict.txt', sep=' ', quoting=csv.QUOTE_NONE, escapechar=' ', index=False)
+    to_predict_df.to_csv('data/final_files/to_predict.txt', sep=' ', quoting=csv.QUOTE_NONE, escapechar=' ', index=False)

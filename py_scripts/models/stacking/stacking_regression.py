@@ -6,7 +6,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.neighbors import KNeighborsRegressor
 
-data = pd.read_csv("../../result_files/final_data.txt", sep=' ')
+data = pd.read_csv("../../data/final_files/final_data.txt", sep=' ')
 
 ###########################################
 ### Split data into features and labels ###

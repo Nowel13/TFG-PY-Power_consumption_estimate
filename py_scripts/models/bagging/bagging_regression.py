@@ -4,7 +4,7 @@ from sklearn.svm import SVR
 from sklearn.ensemble import BaggingRegressor
 from sklearn.model_selection import train_test_split
 
-data = pd.read_csv("../../result_files/final_data.txt", sep=' ')
+data = pd.read_csv("../../data/final_files/final_data.txt", sep=' ')
 
 ###########################################
 ### Split data into features and labels ###
