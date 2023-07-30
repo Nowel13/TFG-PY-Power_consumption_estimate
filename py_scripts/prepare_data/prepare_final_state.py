@@ -9,6 +9,9 @@ import pandas as pd
 
 holiday_days = holidays.ES()
 
+def calculate_date(days, init_date):
+    return (init_date + datetime.timedelta(days=days)).strftime('%Y-%m-%d')
+
 # Generamos una nueva columna en la que se sepa si el día elegido es festivo o no:
 def calculate_holiday(days, init_date):
     return (init_date + datetime.timedelta(days=days)).strftime('%Y-%m-%d') in holiday_days
@@ -50,7 +53,7 @@ def prepare_predictions(data, max, date):
     df['holiday'] = df['day'].apply(lambda x: calculate_holiday(x, date))
     for i in range(0, max):
         df['{}_days_ago'.format(3+i)] = df.apply(lambda row: take_data_from(row, data, 3+i), axis=1)
-    
+    df['day'] = df['day'].apply(lambda x: calculate_date(x, date))
     return df
 
 
@@ -58,7 +61,6 @@ def main(max_days_before, init_date):
 
     if init_date is None:
         date = datetime.datetime(year=2009, month=1, day=1, hour=0)
-        print(date)
     else:
         date = datetime.datetime.strptime(init_date, "%Y-%m-%d").date()
 
@@ -69,12 +71,13 @@ def main(max_days_before, init_date):
     # ejecución, pero ya de por sí tarda muy poco):
     data['holiday'] = data['day'].apply(lambda x: calculate_holiday(x, date))
     # data['holiday'] = np.where(calculate_holiday(data['day']), True, False)
-
     # Generamos el dataframe final con las nuevas columnas añadidas:
     final_data = add_days_columns(data, max_days_before)
 
     # Preparamos un nuevo dataframe con los datos que deberemos de predecir y sus respectivas variables independientes rellenas:
     to_predict_df = prepare_predictions(final_data, max_days_before, date)
+
+    final_data['day'] = final_data['day'].apply(lambda x: calculate_date(x, date))
 
     # Escribimos los resultados en el archivo 'final_data.txt' de forma que podamos utilizar los resultados más adelante en otros scripts:
     final_data.to_csv('data/final_files/final_data.txt', sep=' ', quoting=csv.QUOTE_NONE, escapechar=' ', index=False)

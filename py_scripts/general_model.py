@@ -16,16 +16,13 @@ from sklearn.ensemble import StackingRegressor
 from sklearn.ensemble import VotingRegressor
 
 
-def select_model(model_name, params):
+def select_model(model_name):
     model = {}
     estimator_1 = RandomForestRegressor(n_estimators=100)
     estimator_2 = LinearRegression()
     estimator_3 = KNeighborsRegressor()
-    print(params)
-    # print(params["n_estimators"])
-    # print(params.n_estimators)
     n_estimators = 100
-    n_neighbors = 3
+    n_neighbors = 5
     weights = 'distance'
     match model_name:
         case "ada_boost":
@@ -54,7 +51,7 @@ def select_model(model_name, params):
             model = RandomForestRegressor(n_estimators = n_estimators)
     return model
 
-def main(model_name, params):
+def main(model_name):
     data = pd.read_csv("data/final_files/final_data.txt", sep=' ')
     to_predict = pd.read_csv("data/final_files/to_predict.txt", sep=' ')
     ##############################################################
@@ -85,7 +82,7 @@ def main(model_name, params):
     train_features, test_features, train_labels, test_labels = train_test_split(features_array, labels, test_size = 0.25)
 
     # Seleccionamos el modelo a utilizar mediante los parámetros pasados a la función:
-    model = select_model(model_name, params)
+    model = select_model(model_name)
 
     # Entrenamos el modelo:
     model.fit(train_features, train_labels)
@@ -112,19 +109,21 @@ def main(model_name, params):
     # Mostramos los resultados obtenidos para los 3 siguientes días:
     print(real_predictions)
 
-    days = to_predict['day']
-    hours = to_predict['hour']
-    to_show = pd.DataFrame(data={
-        "day": days,
-        "hour": hours,
+    result_dataframe = pd.DataFrame(data={
+        "day": to_predict['day'],
+        "hour": to_predict['hour'],
         "prediction": real_predictions
     })
+    
+    # Modificamos el dataframe de resultados para ayudar a su muestra en el lado del front:
+    result_dataframe = result_dataframe.pivot(index="hour", columns="day", values="prediction")
+
     # Escribimos los resultados de las predicciones en un csv:
-    to_show.to_csv('data/results/prediction.txt', sep=' ', quoting=csv.QUOTE_NONE, escapechar=' ', index=False)
+    result_dataframe.to_csv('data/results/prediction.txt', sep=' ', quoting=csv.QUOTE_NONE, escapechar=' ', index=True)
 
     # Generamos la gráfica con los resultados de las predicciones:
     plt.figure()
-    plt.plot(to_show.index, to_show['prediction'], 'b-', label="kwh")
+    plt.plot(list(range(len(real_predictions))), real_predictions, 'b-', label="kwh")
     plt.xlabel('Hours from last day with data')
     plt.ylabel('Mean kwh for each user')
     plt.title(f'Predicted values for the next 3 days with {model_name}')

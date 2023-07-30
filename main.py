@@ -91,7 +91,7 @@ def clean_files(max_days_before: int, init_date = None):
 def process_data(max_days_before: str, init_date = "2009-01-01"):
 	start = time.time()
 	merge_data()
-	clean_data(int(max_days_before)	, init_date)
+	clean_data(int(max_days_before), init_date)
 	finish = time.time()
 	return {
 		"n_files": get_n_files(),
@@ -99,14 +99,14 @@ def process_data(max_days_before: str, init_date = "2009-01-01"):
 	}
 
 # Aplica el modelo elegido y con los parámetros establecidos:
-@app.post("/apply")
-def apply_model(model_name: str, parameters = {}):
+@app.post("/apply_model")
+def apply_model(model_name: str):
 	start = time.time()
-	predict(model_name, parameters)
+	predict(model_name)
 	finish = time.time()
 	response = {
 		"selected": model_name,
-		"time": f'Done in {finish - start} seconds',
+		"time": round(finish - start, 2),
 	}
 	return response
 
