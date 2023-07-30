@@ -1,15 +1,15 @@
 import os
 import time
 import pandas as pd
-from typing import List, Dict, Any
-from fastapi import FastAPI, UploadFile, File
-from starlette.responses import FileResponse
 from zipfile import ZipFile
+from typing import List, Dict, Any
+from starlette.responses import FileResponse
+from fastapi import FastAPI, UploadFile, File
+from py_scripts.general_model import main as predict
+from py_scripts.prepare_data.merge_results import main as merge_data
 from py_scripts.prepare_data.read_files import get_file as save_data
 from py_scripts.prepare_data.read_files import read_files as read_data
-from py_scripts.prepare_data.merge_results import main as merge_data
 from py_scripts.prepare_data.prepare_final_state import main as clean_data
-from py_scripts.general_model import main as predict
 
 app = FastAPI()
 

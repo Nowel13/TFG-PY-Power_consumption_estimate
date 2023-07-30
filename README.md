@@ -23,3 +23,16 @@ Para el estudio y análisis de los datos, primero procederemos con la preparaci�
   - Una vez conseguido esta preparación de los datos, se juntarán todos los 6 archivos disponibles ya procesados y se juntará toda la información en un único archivo con el que trabajaremos.
 
 Una vez preparados los datos, contamos con 12864 filas útiles, lo que se traduce en 536 días con 24 valores de consumo cada uno.
+
+
+
+PARA EL USO DE POSTMAN:
+
+PONER EN CONSOLA EL SIGUIENTE COMANDO:
+
+Este comando incluye mi API key para acceder al cliente de postman y poder hacer peticiones a la api
+
+
+Para ejecutar la api en local, lanzar el siguiente comando:
+
+>> uvicorn main:app --reload
