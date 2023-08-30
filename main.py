@@ -66,7 +66,7 @@ def read_files():
   start = time.time()
   read_data()
   finish = time.time()
-  return f"done in {finish-start} seconds"
+  return f"done in {round(finish-start, 2)} seconds"
 
 # Permite unificar los archivos de datos procesados en uno sólo para su
 # posterior uso:
@@ -75,7 +75,7 @@ def merge_files():
   start = time.time()
   merge_data()
   finish = time.time()
-  return f"done in {finish-start} seconds"
+  return f"done in {round(finish-start, 2)} seconds"
 
 # Termina de limpiar y preparar los datos unificados, para el estudio:
 @app.get("/clean")
@@ -83,7 +83,7 @@ def clean_files(max_days_before: int, init_date = None):
   start = time.time()
   clean_data(max_days_before, init_date)
   finish = time.time()
-  return f"done in {finish-start} seconds"
+  return f"done in {round(finish-start, 2)} seconds"
 
 # Unifica, limpia y prepara los datos para el estudio, pero con una
 # única llamada:
@@ -95,7 +95,7 @@ def process_data(max_days_before: str, init_date = "2009-01-01"):
 	finish = time.time()
 	return {
 		"n_files": get_n_files(),
-		"message": f"Done in {finish-start} seconds",
+		"message": f"Done in {round(finish-start, 2)} seconds",
 	}
 
 # Aplica el modelo elegido y con los parámetros establecidos:
