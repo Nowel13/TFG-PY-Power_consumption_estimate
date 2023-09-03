@@ -1,7 +1,13 @@
 # TFG-PY-Power_consumption_estimate
 
-En este proyecto se llevará a cabo el estudio de los datos de consumo eléctrico de clientes pertenecientes a una comercializadora.
+Para poder arrancar el proyecto, se debe instalar previamente la versión 3.10.6 de Python.
+Tras ello debe instalarse Uvicorn, de forma que se pueda generar un servidor con la API:
+    - pip3 install "uvicorn[standard]"
 
-Para ejecutar la api en local, lanzar el siguiente comando:
+Una vez instalado todo, para ejecutar la api en local, lanzar el siguiente comando:
 
 >> uvicorn main:app --reload
+
+El servidor quedará lanzado en la siguiente url:
+
+http://localhost:8000

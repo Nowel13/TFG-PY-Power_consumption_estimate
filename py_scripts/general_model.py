@@ -112,7 +112,7 @@ def main(model_name):
     result_dataframe = pd.DataFrame(data={
         "day": to_predict['day'],
         "hour": to_predict['hour'],
-        "prediction": real_predictions
+        "prediction": np.round(real_predictions,3)
     })
     
     # Modificamos el dataframe de resultados para ayudar a su muestra en el lado del front:
